@@ -101,18 +101,15 @@ This table stores information about books returned by customers.
 ## Queries and Results
 ##### 1. Retrieve the book title, category, and rental price of all available books.
 ```
-SELECT Book_title, Category, Rental_Price 
-FROM Books 
-WHERE Status = 'Yes';
+SELECT Book_title, Category, Rental_Price FROM Books WHERE Status = 'Yes';
 ```
 ###### Result:
 ![1](https://github.com/user-attachments/assets/93677c6a-18df-4d5a-a3b3-fdd367b1e42d)
 
 ##### 2. List the employee names and their respective salaries in descending order of salary.
 ```
-SELECT Emp_name, Salary 
-FROM Employee 
-ORDER BY Salary DESC;
+SELECT Emp_name, Salary FROM Employee ORDER BY Salary DESC;
+
 
 ```
 ###### Result:
@@ -120,20 +117,17 @@ ORDER BY Salary DESC;
 
 ##### 3. Retrieve the book titles and the corresponding customers who have issued those books.
 ```
-SELECT Books.Book_title, Customer.Customer_name 
-FROM IssueStatus
-JOIN Books ON IssueStatus.Isbn_book = Books.ISBN
-JOIN Customer ON IssueStatus.Issued_cust = Customer.Customer_Id;
-
+SELECT B.Book_title, C.Customer_name
+FROM Issue_Status I
+JOIN Books B ON I.Isbn_book = B.ISBN
+JOIN Customer C ON I.Issued_cust = C.Customer_Id;
 ```
 ###### Result:
 ![3](https://github.com/user-attachments/assets/b15a18ed-0307-4303-8e84-26c90f368698)
 
 ##### 4. Display the total count of books in each category.
 ```
-SELECT Category, COUNT(*) AS TotalBooks 
-FROM Books 
-GROUP BY Category;
+SELECT Category, COUNT(*) AS TotalBooks FROM Books GROUP BY Category;
 
 ```
 ###### Result:
@@ -142,9 +136,7 @@ GROUP BY Category;
 ##### 5. Retrieve the employee names and their positions for the employees whose salaries are above Rs. 50,000.
 sql
 ```
-SELECT Emp_name, Position 
-FROM Employee 
-WHERE Salary > 50000;
+SELECT Emp_name, Position,Salary FROM Employee WHERE Salary > 50000;
 
 ```
 ###### Result:
@@ -152,19 +144,16 @@ WHERE Salary > 50000;
 
 ##### 6. List the customer names who registered before 2022-01-01 and have not issued any books yet.
 ```
-SELECT Customer_name 
-FROM Customer 
-WHERE Reg_date < '2022-01-01'
-AND Customer_Id NOT IN (SELECT Issued_cust FROM IssueStatus);
+SELECT Customer_Id,C.Customer_name FROM Customer C
+LEFT JOIN Issue_Status I ON C.Customer_Id = I.Issued_cust
+WHERE C.Reg_date < '2022-01-01' AND I.Issue_Id IS NULL;
 ```
 ###### Result:
 ![6](https://github.com/user-attachments/assets/0a1eca8a-d179-4d51-8b1a-bfc8cdcfd2f5)
 
 ##### 7. Display the branch numbers and the total count of employees in each branch.
 ```
-SELECT Branch_no, COUNT(*) AS TotalEmployees 
-FROM Employee 
-GROUP BY Branch_no;
+SELECT Branch_no, COUNT(*) AS EmployeeCount FROM Employee GROUP BY Branch_no;
 ```
 ###### Result: 
 ![7](https://github.com/user-attachments/assets/b21119f4-8848-49cc-85a1-ba200bcdc27e)
@@ -172,10 +161,10 @@ GROUP BY Branch_no;
 ##### 8. Display the names of customers who have issued books in the month of June 2023.
 sql
 ```
-SELECT Customer.Customer_name 
-FROM IssueStatus
-JOIN Customer ON IssueStatus.Issued_cust = Customer.Customer_Id
-WHERE Issue_date BETWEEN '2023-06-01' AND '2023-06-30';
+SELECT C.Customer_name
+FROM Issue_Status I
+JOIN Customer C ON I.Issued_cust = C.Customer_Id
+WHERE I.Issue_date BETWEEN '2023-06-01' AND '2023-06-30';
 
 ```
 ###### Result: 
@@ -183,19 +172,15 @@ WHERE Issue_date BETWEEN '2023-06-01' AND '2023-06-30';
 
 ##### 9. Retrieve book_title from Books table containing the word "history."
 ```
-SELECT Book_title 
-FROM Books 
-WHERE Book_title LIKE '%history%';
+SELECT Book_title FROM Books WHERE Category LIKE '%History%';
 ```
 ###### Result:
 ![9](https://github.com/user-attachments/assets/2871b54d-faf3-47b6-bbb0-8e83d4c8de25)
 
 ##### 10. Retrieve the branch numbers along with the count of employees for branches having more than 5 employees.
 ```
-SELECT Branch_no, COUNT(*) AS TotalEmployees 
-FROM Employee 
-GROUP BY Branch_no
-HAVING COUNT(*) > 5;
+SELECT Branch_no, COUNT(*) AS EmployeeCount FROM Employee GROUP BY Branch_no HAVING COUNT(*) > 5;
+
 ```
 ###### Result: 
 ![10](https://github.com/user-attachments/assets/04e35d3c-ef21-466f-83ae-7adda629f29a)
@@ -203,20 +188,20 @@ HAVING COUNT(*) > 5;
 
 ##### 11. Retrieve the names of employees who manage branches and their respective branch addresses.
 ```
-SELECT Employee.Emp_name, Branch.Branch_address 
-FROM Employee
-JOIN Branch ON Employee.Emp_Id = Branch.Manager_Id;
+SELECT E.Emp_name, B.Branch_address
+FROM Employee E
+JOIN Branch B ON E.Emp_Id = B.Manager_Id;
 ```
 ###### Result: 
 ![11](https://github.com/user-attachments/assets/f9e2f9ac-3866-4739-b6bd-d626f24966e9)
 
 ##### 12. Display the names of customers who have issued books with a rental price higher than Rs. 25.
 ```
-SELECT Customer.Customer_name 
-FROM IssueStatus
-JOIN Books ON IssueStatus.Isbn_book = Books.ISBN
-JOIN Customer ON IssueStatus.Issued_cust = Customer.Customer_Id
-WHERE Books.Rental_Price > 25;
+SELECT C.Customer_name
+FROM Issue_Status I
+JOIN Books B ON I.Isbn_book = B.ISBN
+JOIN Customer C ON I.Issued_cust = C.Customer_Id
+WHERE B.Rental_Price > 25;
 ```
 ###### Result: 
 ![12](https://github.com/user-attachments/assets/6bb9dcb9-3c78-4c82-9bab-310b2a82c36c)
